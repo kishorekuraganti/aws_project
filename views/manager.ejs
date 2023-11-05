@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manager Interface</title>
+  </head>
+  <body>
+    <h1>Welcome, Manager</h1>
+    <div id="ticket-list">
+      <h2>Tickets to Solve</h2>
+      <ul id="tickets">
+        <% for (let i = 0; i < tickets.length; i++) { %>
+        <li data-ticket-id="<%= tickets[i].Ticket_id %>">
+          Ticket: <%= tickets[i].title %>, Status: <%= tickets[i].status %>
+          <button onclick="markAsSolved('<%= tickets[i].Ticket_id %>')">
+            Mark as Solved
+          </button>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+    <a href="index.ejs">Logout</a>
+
+    <script>
+      async function displayTickets() {
+        try {
+          const response = await fetch("/manager/tickets", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const tickets = await response.json();
+          const ticketList = document.getElementById("tickets");
+          ticketList.innerHTML = ""; // Clear existing tickets
+
+          tickets.forEach((ticket) => {
+            const li = document.createElement("li");
+            li.setAttribute("data-ticket-id", ticket.Ticket_id);
+            li.textContent = `Ticket: ${ticket.title}, Status: ${ticket.status}`;
+            const markAsSolvedButton = document.createElement("button");
+            markAsSolvedButton.textContent = "Mark as Solved";
+            markAsSolvedButton.onclick = () =>
+              markAsSolved(ticket.Ticket_id, ticket);
+            li.appendChild(markAsSolvedButton);
+            ticketList.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error fetching tickets:", error);
+        }
+      }
+
+      async function markAsSolved(ticketId, ticketData) {
+        try {
+          const response = await fetch(
+            `/manager/tickets/${ticketId}/mark-solved`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.status === 200) {
+            // Update the UI to reflect the solved ticket
+            const ticketElement = document.querySelector(
+              `li[data-ticket-id="${ticketId}"]`
+            );
+            ticketElement.textContent = `Ticket: ${ticketData.title}, Status: Solved`;
+            ticketElement.querySelector("button").disabled = true; // Disable the Mark as Solved button for this ticket
+          } else {
+            // Handle error here
+            console.error("Failed to mark the ticket as solved:", error);
+          }
+        } catch (error) {
+          console.error("Error marking the ticket as solved:", error);
+        }
+      }
+
+      async function logout() {
+        // Implement code to log out the user.
+        // You may clear user tokens or session data.
+        // Redirect to the login page upon logout.
+      }
+
+      // Initialize by displaying tickets
+      displayTickets();
+    </script>
+  </body>
+</html>

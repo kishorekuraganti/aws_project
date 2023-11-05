@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Employee Interface</title>
+  </head>
+  <body>
+    <h1>Welcome, Employee</h1>
+    <div id="ticket-list">
+      <h2>My Tickets</h2>
+      <ul id="tickets">
+        <!-- Tickets will be displayed here -->
+      </ul>
+    </div>
+    <div id="ticket-form">
+      <h2>Raise a Ticket</h2>
+      <input type="text" id="ticket-title" placeholder="Ticket Title" />
+      <button onclick="raiseTicket()">Raise Ticket</button>
+    </div>
+    <a href="index.ejs">Logout</a>
+
+    <script>
+      async function displayTickets() {
+        try {
+          const response = await fetch("/employee/tickets", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const tickets = await response.json();
+          const ticketList = document.getElementById("tickets");
+          ticketList.innerHTML = ""; // Clear existing tickets
+
+          tickets.forEach((ticket) => {
+            const li = document.createElement("li");
+            li.textContent = `Ticket: ${ticket.title}, Status: ${ticket.status}`;
+            ticketList.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error fetching tickets:", error);
+        }
+      }
+
+      async function raiseTicket() {
+        const ticketTitle = document.getElementById("ticket-title").value;
+        const ticketData = {
+          title: ticketTitle,
+          status: "Open", // Initial status when raising a ticket
+        };
+
+        try {
+          await fetch("/employee/tickets", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(ticketData),
+          });
+          // Clear the input field
+          document.getElementById("ticket-title").value = "";
+          // Refresh the ticket list
+          displayTickets();
+        } catch (error) {
+          console.error("Error raising a ticket:", error);
+        }
+      }
+
+      async function logout() {
+        href;
+        // Implement code to log out the user.
+        // You may clear user tokens or session data.
+        // Redirect to the login page upon logout.
+      }
+
+      // Initialize by displaying tickets
+      displayTickets();
+    </script>
+  </body>
+</html>

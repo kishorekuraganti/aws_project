@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.1488.0",
+    "body-parser": "^1.20.2",
+    "ejs": "^3.1.9",
+    "express.js": "^1.0.0",
+    "node": "^21.1.0",
+    "pug": "^3.0.2",
+    "uuid": "^9.0.1"
+  },
+  "name": "aws-project",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
